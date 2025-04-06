@@ -32,7 +32,6 @@ public class MAinCharacter : MonoBehaviour
         playerCollider = GetComponent<CapsuleCollider2D>();
     }
 
-
     void FixedUpdate() {
         // no hay prioridad en las acciones 
         // no puede haber ciclos largos
