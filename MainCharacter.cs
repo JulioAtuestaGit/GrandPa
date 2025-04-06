@@ -9,6 +9,7 @@ public class MAinCharacter : MonoBehaviour
     private float playerJumpForce, playerSpeed;
     private float acumulatedTime;
     private int jumps = 0;
+    private bool isJumping, isSliding,isAttacking,isBlocking;
 
     public string playerName, playerStatus;
 
@@ -47,13 +48,16 @@ public class MAinCharacter : MonoBehaviour
     void PlayerMove(){
         var movement = Input.GetAxis("Horizontal");
         playerRb.velocity = new Vector2(movement * playerSpeed, playerRb.velocity.y);
+        //animacion movimiento
     } 
     void PlayerJump(){
         // si esta apoyado en una superficie  o si estando en el aire solo ha hecho un salto o ninguno
         if ((IsGrounded() || jumps<=1) && Input.GetKeyDown(salto)){
             playerJumpForce = jumps ==1 ? jumpForce * 0.4f : jumpForce;
             playerRb.AddForce(Vector2.up * playerJumpForce);
+            isJumping = true;
             jumps += 1;
+            //animacion salto
         }
     }
     void PlayerSlide(){
@@ -63,7 +67,14 @@ public class MAinCharacter : MonoBehaviour
             playerRb.MoveRotation(90);
             Vector2 playerDimenssions = playerCollider.size;
             Vector2 newPos = new Vector2 (playerRb.position.x,playerDimenssions.x/2); // probar posicionamiento
-            playerRb.MovePosition(newPos);
+            playerRb.MovePosition(newPos); // lo acuesta
+            /*
+            Vector2 forward = new Vector2; 
+            depende de la orientación del personaje (1,0) (-1,0)
+            playerRb.AddForce();
+             */
+            isSliding = true;
+            //animacion de slide
         }
     }
     void PlayerAtack(){
@@ -71,19 +82,30 @@ public class MAinCharacter : MonoBehaviour
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(ataque)){
             Debug.Log("Ataque ligero");
             playerDamage = damage;
+            isAttacking = true;
+            //lama animacion de ataque ligero 
+            //hace daño
         }
         if (Input.GetMouseButton(0) || Input.GetKey(ataque)){
             Debug.Log("Ataque Pesado");
             acumulatedTime += Time.deltaTime;
             playerDamage = damage * 1.5f * acumulatedTime; 
+            isAttacking = true;
+            // llama animacion de ataque pesado
+            //hace daño
+
         }
     }
         void PlayerDefense(){
         //  
         if (Input.GetMouseButton(1) || Input.GetKey(bloquear)){
             Debug.Log("bloquea");
+            isBlocking = true;
+            // animacion y codigo de bloqueo
         }
+        isBlocking = false;
     }
+
     bool IsShifted() {
         if (Input.GetKey(correr)){
             playerJumpForce = jumpForce * 1.4f;
